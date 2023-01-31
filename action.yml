@@ -28,6 +28,7 @@ runs:
     - name: Install Rust
       id: rust
       uses: actions-rs/toolchain@v1
+      working-directory: ${{ inputs.path }}
       with:
         profile: minimal
         override: true
@@ -46,10 +47,12 @@ runs:
       run: rustc --version --verbose
 
     - name: Cargo Build
+      working-directory: ${{ inputs.path }}
       shell: bash
       run: cargo build
-      
+
     - name: Cargo Test
       if: ${{ ! inputs.skipUnitTests }}
+      working-directory: ${{ inputs.path }}
       shell: bash
       run: cargo test
