@@ -1,5 +1,4 @@
 on: 
-  push:
   pull_request:
   schedule:
     # Run full test on a nightly basis -- time is GMT, so do it a bit after midnight ET
