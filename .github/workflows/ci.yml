@@ -24,7 +24,7 @@ jobs:
       - uses: ./
         if: ${{ matrix.scenario == 'defaults' }}
         with:
-          path: subdir
+          path: cloudtruth-cli
       
       # Scenario: install components
       - uses: ./
