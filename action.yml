@@ -27,8 +27,9 @@ runs:
 
     - name: Install Rust
       id: rust
-      uses: actions-rs/toolchain@v1
+      uses: cloudtruth/rust-toolchain@v1
       with:
+        working-directory: ${{ inputs.path }}
         profile: minimal
         override: true
         components: ${{ inputs.components }}
