@@ -28,7 +28,7 @@ jobs:
       
       # Scenario: install components
       - uses: ./
-        if: ${{ matrix.scenario == 'components }}
+        if: ${{ matrix.scenario == 'components' }}
         with:
           path: cloudtruth-cli
           components: rustfmt, clippy
@@ -47,7 +47,7 @@ jobs:
         with:
           ref: main
           path: cloudtruth-cli
-          components: ${{ matrix.components }}
+          components: rustfmt, clippy
           skipCache: true
           skipUnitTests: true
           cacheKey: v0-cloudtruth-cli-custom-key
