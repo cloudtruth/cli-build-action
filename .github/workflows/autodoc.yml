@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - autodoc # for testing this workflow outside of main
 jobs:
   update-doc:
      runs-on: ubuntu-latest
