@@ -1,0 +1,29 @@
+on: 
+  push:
+  pull_request:
+  schedule:
+    # Run full test on a nightly basis -- time is GMT, so do it a bit after midnight ET
+    - cron: '15 5 * * *' 
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    name: Test Action
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        path: ['', 'child_dir']
+        components: ['', 'rustfmt, clippy']
+        skipCache: ['', 'true']
+        skipUnitTests: ['', 'true']
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          path: ${{ matrix.path }}
+          components: ${{ matrix.components }}
+          skipCache: ${{ matrix.skipCache }}
+          skipUnitTests: ${{ matrix.skipUnitTests }}
+

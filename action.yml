@@ -1,0 +1,55 @@
+name: Build CloudTruth CLI
+description: 'Builds cloudtruth-cli from source'
+inputs:
+  ref:
+    description: "git ref to build from (defaults to the default branch)"
+  path:
+    description: 'Relative path under $GITHUB_WORKSPACE to place the repository'
+  components:
+    description: 'rust toolchain components to install (ex rustfmt, clippy)'
+  target:
+    description: 'rustc target to build'
+  skipUnitTests:
+    description: 'Skips running unit tests'
+  skipCache:
+    description: "Skip caching of Cargo registry and dependencies"
+  cacheKey:
+    description: "A static string to include to the cache key"
+    default: v0-cloudtruth-cli
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: cloudtruth/cloudtruth-cli
+        ref: ${{ inputs.ref }}
+        path: ${{ inputs.path }}
+
+    - name: Install Rust
+      id: rust
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        override: true
+        components: ${{ inputs.components }}
+        target: ${{ inputs.target }}
+
+    - name: Rust Cache
+      if: ${{ ! inputs.skipCache }}
+      uses: Swatinem/rust-cache@v2
+      with:
+        prefix-key: ${{ inputs.cacheKey }}
+        shared-key: ${{ runner.os }}
+
+    - name: Show Rust version and platform details
+      shell: bash
+      run: rustc --version --verbose
+
+    - name: Cargo Build
+      shell: bash
+      run: cargo build
+      
+    - name: Cargo Test
+      if: ${{ ! inputs.skipUnitTests }}
+      shell: bash
+      run: cargo test
