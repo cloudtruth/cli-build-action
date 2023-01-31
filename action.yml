@@ -28,7 +28,6 @@ runs:
     - name: Install Rust
       id: rust
       uses: actions-rs/toolchain@v1
-      working-directory: ${{ inputs.path }}
       with:
         profile: minimal
         override: true
