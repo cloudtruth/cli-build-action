@@ -12,17 +12,43 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        path: ['', 'child_dir']
-        components: ['', 'rustfmt, clippy']
-        skipCache: ['', 'true']
-        skipUnitTests: ['', 'true']
+        scenario: [defaults, components, skips, full]
 
     steps:
       - uses: actions/checkout@v3
+
+      # Scenario: minimal with all defaults.
+      # Note: path is required otherwise actions.yml gets overwritten
+      # and workflow fails
       - uses: ./
+        if: ${{ matrix.scenario == 'defaults' }}
         with:
-          path: ${{ matrix.path }}
+          path: subdir
+      
+      # Scenario: install components
+      - uses: ./
+        if: ${{ matrix.scenario == 'components }}
+        with:
+          path: cloudtruth-cli
+          components: rustfmt, clippy
+        
+      # Scenario: using skip options
+      - uses: ./
+        if: ${{ matrix.scenario == 'skips' }}
+        with:
+          path: cloudtruth-cli
+          skipCache: true
+          skipUnitTests: true
+      
+      # Scenario: all options (except target)
+      - uses: ./
+        if: ${{ matrix.scenario == 'full' }}
+        with:
+          ref: main
+          path: cloudtruth-cli
           components: ${{ matrix.components }}
-          skipCache: ${{ matrix.skipCache }}
-          skipUnitTests: ${{ matrix.skipUnitTests }}
+          skipCache: true
+          skipUnitTests: true
+          cacheKey: v0-cloudtruth-cli-custom-key
+
 
