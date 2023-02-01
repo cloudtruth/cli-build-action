@@ -60,5 +60,6 @@ jobs:
           path: cloudtruth-cli
           components: rustfmt, clippy
           cacheKey: v0-cloudtruth-cli-custom-key
+          cacheOnFailure: true
 
 
