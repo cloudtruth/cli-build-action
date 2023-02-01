@@ -51,6 +51,7 @@ runs:
         workspaces: ${{ inputs.path }} -> target
 
     - name: Show Rust version and platform details
+      working-directory: ${{ inputs.path }}
       shell: bash
       run: rustc --version --verbose
 
