@@ -46,7 +46,7 @@ runs:
       with:
         prefix-key: ${{ inputs.cacheKey }}
         shared-key: ${{ runner.os }}
-        workspaces: ${{ inputs.path }} -> ${{ inputs.path }}/target
+        workspaces: ${{ inputs.path }} -> target
 
     - name: Show Rust version and platform details
       shell: bash
