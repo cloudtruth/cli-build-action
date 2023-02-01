@@ -16,6 +16,22 @@ By default, this will checkout the `main` branch of [cloudtruth/cloudtruth-cli](
 
 ## Inputs
 
+<!-- AUTO-DOC-INPUT:START - Do not remove or modify this section -->
+
+|     INPUT     |  TYPE  | REQUIRED |        DEFAULT        |                                                                                    DESCRIPTION                                                                                     |
+|---------------|--------|----------|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| buildOptions  | string |  false   |                       |                                                              Command-line options passed directly to `cargo<br>build`                                                              |
+|   cacheKey    | string |  false   | `"v0-cloudtruth-cli"` |                                                     A custom string to prefix cache<br>keys with when caching build artifacts                                                      |
+|  components   | string |  false   |                       |                                                            Rust toolchain components to install (ex<br>rustfmt, clippy)                                                            |
+|     path      | string |  false   |         `"."`         |                                                          Relative path under $GITHUB_WORKSPACE to place<br>the repository                                                          |
+|      ref      | string |  false   |                       |                                                             Git ref to build from (defaults<br>to the default branch)                                                              |
+|   skipCache   | string |  false   |                       |                                                                 Skip caching of Cargo registry and<br>dependencies                                                                 |
+| skipUnitTests | string |  false   |                       |                                                                              Skips running unit tests                                                                              |
+|    target     | string |  false   |                       | Build targets to install with `rustup`.<br> Note you will still need to<br> pass in the `--target` build option<br> with `buildOptions` if you want Cargo<br>to build this target) |
+|  testOptions  | string |  false   |                       |                                                              Command-line options passed directly to `cargo<br>test`                                                               |
+
+<!-- AUTO-DOC-INPUT:END -->
+
 
 ## Examples
 
