@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        scenario: [defaults, components, skips, full]
+        scenario: [defaults, opts, components, skips, full]
 
     steps:
       - uses: actions/checkout@v3
@@ -25,6 +25,14 @@ jobs:
         if: ${{ matrix.scenario == 'defaults' }}
         with:
           path: cloudtruth-cli
+
+      # Scenario: override build/test options
+      - uses: ./
+        if: ${{ matrix.scenario == 'opts' }}
+        with:
+          path: cloudtruth-cli
+          buildOptions: --release
+          testOptions: --no-run -v
       
       # Scenario: install components
       - uses: ./
@@ -45,6 +53,8 @@ jobs:
       - uses: ./
         if: ${{ matrix.scenario == 'full' }}
         with:
+          buildOptions: --release
+          testOptions: --release --no-fail-fast
           ref: main
           path: cloudtruth-cli
           components: rustfmt, clippy

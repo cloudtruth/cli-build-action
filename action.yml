@@ -1,20 +1,25 @@
 name: Build CloudTruth CLI
 description: 'Builds cloudtruth-cli from source'
 inputs:
+  buildOptions:
+    description: Command-line options passed directly to `cargo build`
+  testOptions:
+    description: Command-line options passed directly to `cargo test`
   ref:
-    description: "git ref to build from (defaults to the default branch)"
+    description: Git ref to build from (defaults to the default branch)
   path:
     description: 'Relative path under $GITHUB_WORKSPACE to place the repository'
+    default: '.'
   components:
-    description: 'rust toolchain components to install (ex rustfmt, clippy)'
+    description: Rust toolchain components to install (ex rustfmt, clippy)
   target:
-    description: 'rustc target to build'
+    description: Build targets to install with `rustup`. Note you will still need to pass in the `--target` build option with `buildOptions` if you want Cargo to build this target)
   skipUnitTests:
     description: 'Skips running unit tests'
   skipCache:
     description: "Skip caching of Cargo registry and dependencies"
   cacheKey:
-    description: "A static string to include to the cache key"
+    description: "A custom string to prefix cache keys with when caching build artifacts"
     default: v0-cloudtruth-cli
 runs:
   using: "composite"
@@ -36,11 +41,12 @@ runs:
         target: ${{ inputs.target }}
 
     - name: Rust Cache
-      if: ${{ ! inputs.skipCache }}
+      if: ${{ !inputs.skipCache }}
       uses: Swatinem/rust-cache@v2
       with:
         prefix-key: ${{ inputs.cacheKey }}
         shared-key: ${{ runner.os }}
+        workspaces: ${{ inputs.path }} -> target
 
     - name: Show Rust version and platform details
       shell: bash
@@ -49,10 +55,10 @@ runs:
     - name: Cargo Build
       working-directory: ${{ inputs.path }}
       shell: bash
-      run: cargo build
+      run: cargo build ${{ inputs.buildOptions }}
 
     - name: Cargo Test
       if: ${{ ! inputs.skipUnitTests }}
       working-directory: ${{ inputs.path }}
       shell: bash
-      run: cargo test
+      run: cargo test ${{ inputs.testOptions }}
