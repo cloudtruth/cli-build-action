@@ -15,14 +15,16 @@ inputs:
   target:
     description: Build targets to install with `rustup`. Note you will still need to pass in the `--target` build option with `buildOptions` if you want Cargo to build this target)
   skipUnitTests:
-    description: 'Skips running unit tests'
+    description: Skips running unit tests
   skipCache:
-    description: "Skip caching of Cargo registry and dependencies"
+    description: Skip caching of Cargo registry and dependencies
   skipBuild:
-    description: "Skip the build step. Useful if you just want to run linting or reports."
+    description: Skip the build step. Useful if you just want to run linting or reports.
   cacheKey:
-    description: "A custom string to prefix cache keys with when caching build artifacts"
+    description: A custom string to prefix cache keys with when caching build artifacts
     default: v0-cloudtruth-cli
+  cacheOnFailure:
+    description: "Cache build artifacts even when job fails (default false)"
 runs:
   using: "composite"
   steps:
@@ -49,6 +51,7 @@ runs:
         prefix-key: ${{ inputs.cacheKey }}
         shared-key: ${{ runner.os }}
         workspaces: ${{ inputs.path }} -> target
+        cache-on-failure: ${{ inputs.cacheOnFailure }}
 
     - name: Show Rust version and platform details
       working-directory: ${{ inputs.path }}
