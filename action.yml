@@ -8,7 +8,8 @@ inputs:
   ref:
     description: Git ref to build from (defaults to the default branch)
   path:
-    description: Relative path under $GITHUB_WORKSPACE to place the repository
+    description: 'Relative path under $GITHUB_WORKSPACE to place the repository'
+    default: '.'
   components:
     description: Rust toolchain components to install (ex rustfmt, clippy)
   target:
@@ -40,11 +41,12 @@ runs:
         target: ${{ inputs.target }}
 
     - name: Rust Cache
-      if: ${{ ! inputs.skipCache }}
+      if: ${{ !inputs.skipCache }}
       uses: Swatinem/rust-cache@v2
       with:
         prefix-key: ${{ inputs.cacheKey }}
         shared-key: ${{ runner.os }}
+        workspaces: ${{ inputs.path }} -> ${{ inputs.path }}/target
 
     - name: Show Rust version and platform details
       shell: bash
