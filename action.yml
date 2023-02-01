@@ -18,6 +18,8 @@ inputs:
     description: 'Skips running unit tests'
   skipCache:
     description: "Skip caching of Cargo registry and dependencies"
+  skipBuild:
+    description: "Skip the build step. Useful if you just want to run linting or reports."
   cacheKey:
     description: "A custom string to prefix cache keys with when caching build artifacts"
     default: v0-cloudtruth-cli
@@ -49,16 +51,18 @@ runs:
         workspaces: ${{ inputs.path }} -> target
 
     - name: Show Rust version and platform details
+      working-directory: ${{ inputs.path }}
       shell: bash
       run: rustc --version --verbose
 
     - name: Cargo Build
+      if: ${{ !inputs.skipBuild }}
       working-directory: ${{ inputs.path }}
       shell: bash
       run: cargo build ${{ inputs.buildOptions }}
 
     - name: Cargo Test
-      if: ${{ ! inputs.skipUnitTests }}
+      if: ${{ !inputs.skipBuild && !inputs.skipUnitTests }}
       working-directory: ${{ inputs.path }}
       shell: bash
       run: cargo test ${{ inputs.testOptions }}
