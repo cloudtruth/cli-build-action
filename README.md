@@ -12,7 +12,11 @@ Add to your GitHub Workflow to checkout the Cloudtruth CLI and build it from sou
     - uses: cloudtruth/cli-build-action@v1
 ```
 
-By default, this will checkout the `main` branch of [cloudtruth/cloudtruth-cli](cloudtruth/cloudtruth-cli) into the workspace directory, install the Rust toolchain version specified by the `rust-toolchain` file present in the repo, build the CLI executable with Cargo, and run unit tests.
+By default, this will:
+* checkout the `main` branch of [cloudtruth/cloudtruth-cli](cloudtruth/cloudtruth-cli) into the workspace directory
+* install the Rust toolchain version specified by the `rust-toolchain` file present in the repo
+* build the CLI executable with Cargo
+* run unit tests.
 
 
 ## Examples
