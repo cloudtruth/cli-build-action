@@ -34,7 +34,7 @@ runs:
         ref: ${{ inputs.ref }}
         path: ${{ inputs.path }}
 
-    - uses: Find rust-toolchain file
+    - name: Find rust-toolchain file
       shell: bash
       run: |
         if test -f rust-toolchain -o -f rust-toolchain.yml -o -f rust.toolchain-yaml; then
