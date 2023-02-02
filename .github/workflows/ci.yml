@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        scenario: [defaults, opts, components, skips, full]
+        scenario: [defaults, opts, components, legacy-ref, skips, full]
 
     steps:
       - uses: actions/checkout@v3
@@ -39,6 +39,14 @@ jobs:
         if: ${{ matrix.scenario == 'components' }}
         with:
           path: cloudtruth-cli
+          components: rustfmt, clippy
+
+      # Scenario: install CLI version with no rust-toolchain file
+      - uses: ./
+        if: ${{ matrix.scenario == 'legacy-ref' }}
+        with:
+          path: cloudtruth-cli
+          ref: refs/tags/1.1.8
           components: rustfmt, clippy
         
       # Scenario: using skip options

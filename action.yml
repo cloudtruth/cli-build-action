@@ -34,13 +34,25 @@ runs:
         ref: ${{ inputs.ref }}
         path: ${{ inputs.path }}
 
+    - name: Find rust-toolchain file
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        if test -f rust-toolchain -o -f rust-toolchain.yml -o -f rust.toolchain.yaml; then
+          echo 'Found rust-toolchain file'
+        else
+          echo 'No rust-toolchain file. Assuming legacy cloudtruth-cli'
+          echo RUST_TOOLCHAIN=1.63.0 >> $GITHUB_ENV
+        fi
+
     - name: Install Rust
       id: rust
       uses: cloudtruth/rust-toolchain@v1
       with:
+        toolchain: ${{ env.RUST_TOOLCHAIN }}
         working-directory: ${{ inputs.path }}
         profile: minimal
-        override: true
+        default: true
         components: ${{ inputs.components }}
         target: ${{ inputs.target }}
 
