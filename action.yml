@@ -38,7 +38,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
-        if test -f rust-toolchain -o -f rust-toolchain.yml -o -f rust.toolchain-yaml; then
+        if test -f rust-toolchain -o -f rust-toolchain.yml -o -f rust.toolchain.yaml; then
           echo 'Found rust-toolchain file'
         else
           echo 'No rust-toolchain file. Assuming legacy cloudtruth-cli'
