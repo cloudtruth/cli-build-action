@@ -42,7 +42,8 @@ runs:
         else
           echo 'No rust-toolchain file. Assuming legacy cloudtruth-cli'
           echo RUST_TOOLCHAIN=1.63.0 >> $GITHUB_ENV
-
+        fi
+        
     - name: Install Rust
       id: rust
       uses: cloudtruth/rust-toolchain@v1
