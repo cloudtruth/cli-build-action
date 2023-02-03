@@ -12,6 +12,15 @@ inputs:
     default: '.'
   components:
     description: Rust toolchain components to install (ex rustfmt, clippy)
+  profile:
+    description: rust toolchain profile to use
+    default: minimal
+  override:
+    description: Whether to use rustup default or rustup override (default to rustup default). Set to true for override behavior
+  cross:
+    description: Whether to use Cross or Cargo for builds (default to Cargo). Set to true for cross builds.
+  cargoBinstall:
+    description: If true, installs cargo binstall for faster installation of Cargo utilities
   target:
     description: Build targets to install with `rustup`. Note you will still need to pass in the `--target` build option with `buildOptions` if you want Cargo to build this target)
   skipUnitTests:
@@ -23,8 +32,6 @@ inputs:
   cacheKey:
     description: A custom string to prefix cache keys with when caching build artifacts
     default: v0-cloudtruth-cli
-  cacheOnFailure:
-    description: "Cache build artifacts even when job fails (default false)"
 runs:
   using: "composite"
   steps:
@@ -51,33 +58,68 @@ runs:
       with:
         toolchain: ${{ env.RUST_TOOLCHAIN }}
         working-directory: ${{ inputs.path }}
-        profile: minimal
+        profile: ${{ inputs.profile }}
         default: true
         components: ${{ inputs.components }}
         target: ${{ inputs.target }}
 
-    - name: Rust Cache
+    - uses: Swatinem/rust-cache@v2
       if: ${{ !inputs.skipCache }}
-      uses: Swatinem/rust-cache@v2
       with:
         prefix-key: ${{ inputs.cacheKey }}
         shared-key: ${{ runner.os }}
         workspaces: ${{ inputs.path }} -> target
-        cache-on-failure: ${{ inputs.cacheOnFailure }}
 
-    - name: Show Rust version and platform details
+    - name: Install cargo-binstall
+      if: inputs.cargoBinstall
+      shell: bash
+      run: |
+        BASE_BINSTALL_URL='https://github.com/cargo-bins/cargo-binstall/releases/latest/download/'
+        case ${{ runner.os }} in
+            Linux)
+              BINSTALL_FILE='cargo-binstall-x86_64-unknown-linux-musl.tgz'
+              BINSTALL_URL="$BASE_BINSTALL_URL/$BINSTALL_FILE"
+              curl -LSs "$BINSTALL_URL" | tar -C $HOME/.cargo/bin -xvz
+            ;;
+            macOS)
+              BINSTALL_FILE='cargo-binstall-universal-apple-darwin.zip'
+              BINSTALL_URL="$BASE_BINSTALL_URL/$BINSTALL_FILE"
+              curl -LSs "$BINSTALL_URL" > "/tmp/$BINSTALL_FILE"
+              unzip -o -d "$HOME/.cargo/bin" "/tmp/$BINSTALL_FILE"
+            ;;
+            Windows)
+              BINSTALL_FILE='cargo-binstall-x86_64-pc-windows-msvc.zip'
+              BINSTALL_URL="$BASE_BINSTALL_URL/$BINSTALL_FILE"
+              curl -LSs "$BINSTALL_URL" > "/tmp/$BINSTALL_FILE"
+              unzip -o -d "$HOME/.cargo/bin" "/tmp/$BINSTALL_FILE"
+        esac;
+
+    - run: cargo binstall --no-confirm cross
+      if: ${{ inputs.cargoBinstall && inputs.cross }}
       working-directory: ${{ inputs.path }}
       shell: bash
-      run: rustc --version --verbose
 
-    - name: Cargo Build
-      if: ${{ !inputs.skipBuild }}
+    - run: cargo install cross
+      if: ${{ !inputs.cargoBinstall && inputs.cross }}
       working-directory: ${{ inputs.path }}
       shell: bash
-      run: cargo build ${{ inputs.buildOptions }}
 
-    - name: Cargo Test
-      if: ${{ !inputs.skipBuild && !inputs.skipUnitTests }}
+    - run: cargo build ${{ inputs.buildOptions }}
+      if: ${{ !inputs.skipBuild && !inputs.cross }}
       working-directory: ${{ inputs.path }}
       shell: bash
-      run: cargo test ${{ inputs.testOptions }}
+
+    - run: cargo build ${{ inputs.buildOptions }}
+      if: ${{ !inputs.skipBuild && inputs.cross }}
+      working-directory: ${{ inputs.path }}
+      shell: bash
+
+    - run: cargo test ${{ inputs.testOptions }}
+      if: ${{ !inputs.skipBuild && !inputs.skipUnitTests && !inputs.cross }}
+      working-directory: ${{ inputs.path }}
+      shell: bash
+  
+    - run: cross test ${{ inputs.testOptions }}
+      if: ${{ !inputs.skipBuild && !inputs.skipUnitTests && inputs.cross }}
+      working-directory: ${{ inputs.path }}
+      shell: bash

@@ -13,7 +13,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        scenario: [defaults, opts, components, legacy-ref, skips, full]
+        scenario: [defaults, opts, components, legacy-ref, binstall, skips, full]
+        include:
+          # linux-specific tests
+          - { os: ubuntu-latest, scenario: cross}
+          - { os: ubuntu-latest, scenario: cross-binstall}
 
     steps:
       - uses: actions/checkout@v3
@@ -34,11 +38,12 @@ jobs:
           buildOptions: --release
           testOptions: --no-run -v
       
-      # Scenario: install components
+      # Scenario: install components and profile
       - uses: ./
         if: ${{ matrix.scenario == 'components' }}
         with:
           path: cloudtruth-cli
+          profile: default
           components: rustfmt, clippy
 
       # Scenario: install CLI version with no rust-toolchain file
@@ -57,8 +62,29 @@ jobs:
           skipCache: true
           skipUnitTests: true
           skipBuild: true
+
+      - uses: ./
+        if: ${{ matrix.scenario == 'binstall' }}
+        with:
+          path: cloudtruth-cli
+          cargoBinstall: true
+
+      - uses: ./
+        if: ${{ matrix.scenario == 'cross' }}
+        with:
+          path: cloudtruth-cli
+          cross: true
+          target: x86_64-unknown-linux-musl
+
+      - uses: ./
+        if: ${{ matrix.scenario == 'cross-binstall' }}
+        with:
+          path: cloudtruth-cli
+          cross: true
+          cargoBinstall: true
+          target: x86_64-unknown-linux-musl
       
-      # Scenario: all non-skip options except target
+      # Scenario: all non-skip options except target/cross/binstall
       - uses: ./
         if: ${{ matrix.scenario == 'full' }}
         with:
@@ -67,7 +93,8 @@ jobs:
           ref: main
           path: cloudtruth-cli
           components: rustfmt, clippy
+          profile: minimal
+          override: true
           cacheKey: v0-cloudtruth-cli-custom-key
-          cacheOnFailure: true
 
 
