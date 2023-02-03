@@ -64,13 +64,13 @@ jobs:
           skipBuild: true
 
       - uses: ./
-        if: ${{ matrix.scenario 'cross' }}
+        if: ${{ matrix.scenario == 'cross' }}
         with:
           cross: true
           target: x86_64-unknown-linux-musl
 
       - uses: ./
-        if: ${{ matrix.scenario 'cross-binstall' }}
+        if: ${{ matrix.scenario == 'cross-binstall' }}
         with:
           cross: true
           cargoBinstall: true
