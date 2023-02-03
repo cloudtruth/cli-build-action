@@ -89,7 +89,7 @@ runs:
             ;;
             Windows)
               BINSTALL_FILE='cargo-binstall-x86_64-pc-windows-msvc.zip'
-              BINSTALL_URL="#BASE_BINSTALL_URL/$BINSTALL_FILE"
+              BINSTALL_URL="$BASE_BINSTALL_URL/$BINSTALL_FILE"
               curl -LSs "$BINSTALL_URL" > "/tmp/$BINSTALL_FILE"
               unzip -o -d "$HOME/.cargo/bin" "/tmp/$BINSTALL_FILE"
         esac;
