@@ -66,12 +66,14 @@ jobs:
       - uses: ./
         if: ${{ matrix.scenario == 'cross' }}
         with:
+          path: cloudtruth-cli
           cross: true
           target: x86_64-unknown-linux-musl
 
       - uses: ./
         if: ${{ matrix.scenario == 'cross-binstall' }}
         with:
+          path: cloudtruth-cli
           cross: true
           cargoBinstall: true
           target: x86_64-unknown-linux-musl
@@ -85,7 +87,8 @@ jobs:
           ref: main
           path: cloudtruth-cli
           components: rustfmt, clippy
+          profile: minimal
+          override: true
           cacheKey: v0-cloudtruth-cli-custom-key
-          cacheOnFailure: true
 
 
