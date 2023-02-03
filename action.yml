@@ -79,7 +79,7 @@ runs:
             Linux)
               BINSTALL_FILE='cargo-binstall-x86_64-unknown-linux-musl.tgz'
               BINSTALL_URL="$BASE_BINSTALL_URL/$BINSTALL_FILE"
-              curl -LOSs "$BINSTALL_URL" | tar -C $HOME/.cargo/bin -xvz
+              curl -LSs "$BINSTALL_URL" | tar -C $HOME/.cargo/bin -xvz
             ;;
             macOS)
               BINSTALL_FILE='cargo-binstall-universal-apple-darwin.zip'
