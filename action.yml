@@ -17,18 +17,24 @@ inputs:
     default: minimal
   override:
     description: Whether to use rustup default or rustup override (default to rustup default). Set to true for override behavior
+    default: 'false'
   cross:
     description: Whether to use Cross or Cargo for builds (default to Cargo). Set to true for cross builds.
+    default: 'false'
   cargoBinstall:
     description: If true, installs cargo binstall for faster installation of Cargo utilities
+    default: 'false'
   target:
     description: Build targets to install with `rustup`. Note you will still need to pass in the `--target` build option with `buildOptions` if you want Cargo to build this target)
   skipUnitTests:
     description: Skips running unit tests
+    default: 'false'
   skipCache:
     description: Skip caching of Cargo registry and dependencies
+    default: 'false'
   skipBuild:
     description: Skip the build step. Useful if you just want to run linting or reports.
+    default: 'false'
   cacheKey:
     description: A custom string to prefix cache keys with when caching build artifacts
     default: v0-cloudtruth-cli
