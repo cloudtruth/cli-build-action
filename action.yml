@@ -78,7 +78,7 @@ runs:
         prefix-key: ${{ inputs.cacheKey }}
         shared-key: ${{ runner.os }}-${{ inputs.target }}
         workspaces: ${{ inputs.path }} -> target
-        cache-directories: ${{ cacheDirectories }}
+        cache-directories: ${{ inputs.cacheDirectories }}
 
     - name: Install cargo-binstall
       if: fromJSON(inputs.cargoBinstall)
