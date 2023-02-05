@@ -38,6 +38,9 @@ inputs:
   cacheKey:
     description: A custom string to prefix cache keys with when caching build artifacts
     default: v0-cloudtruth-cli
+  cacheDirectories:
+    description: "Additional non workspace directories to be cached, separated by newlines."
+
 runs:
   using: "composite"
   steps:
@@ -75,6 +78,7 @@ runs:
         prefix-key: ${{ inputs.cacheKey }}
         shared-key: ${{ runner.os }}-${{ inputs.target }}
         workspaces: ${{ inputs.path }} -> target
+        cache-directories: ${{ cacheDirectories }}
 
     - name: Install cargo-binstall
       if: fromJSON(inputs.cargoBinstall)
