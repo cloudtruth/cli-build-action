@@ -94,7 +94,7 @@ runs:
               unzip -o -d "$HOME/.cargo/bin" "/tmp/$BINSTALL_FILE"
         esac;
 
-    - run: cargo binstall --no-confirm cross
+    - run: cargo binstall --no-confirm --force cross
       if: ${{ inputs.cargoBinstall && inputs.cross }}
       working-directory: ${{ inputs.path }}
       shell: bash
