@@ -1,5 +1,6 @@
 name: CI
 on: 
+  workflow_dispatch:
   pull_request:
   schedule:
     # Run full test on a nightly basis -- time is GMT, so do it a bit after midnight ET
