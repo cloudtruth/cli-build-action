@@ -64,14 +64,14 @@ runs:
         target: ${{ inputs.target }}
 
     - uses: Swatinem/rust-cache@v2
-      if: ${{ !inputs.skipCache }}
+      if: ${{ !fromJSON(inputs.skipCache) }}
       with:
         prefix-key: ${{ inputs.cacheKey }}
         shared-key: ${{ runner.os }}-${{ inputs.target }}
         workspaces: ${{ inputs.path }} -> target
 
     - name: Install cargo-binstall
-      if: inputs.cargoBinstall
+      if: fromJSON(inputs.cargoBinstall)
       shell: bash
       run: |
         BASE_BINSTALL_URL='https://github.com/cargo-bins/cargo-binstall/releases/latest/download/'
@@ -95,31 +95,31 @@ runs:
         esac;
 
     - run: cargo binstall --no-confirm --force cross
-      if: ${{ inputs.cargoBinstall && inputs.cross }}
+      if: ${{ fromJSON(inputs.cargoBinstall) && fromJSON(inputs.cross) }}
       working-directory: ${{ inputs.path }}
       shell: bash
 
     - run: cargo install cross
-      if: ${{ !inputs.cargoBinstall && inputs.cross }}
+      if: ${{ !fromJSON(inputs.cargoBinstall) && fromJSON(inputs.cross) }}
       working-directory: ${{ inputs.path }}
       shell: bash
 
     - run: cargo build ${{ inputs.buildOptions }}
-      if: ${{ !inputs.skipBuild && !inputs.cross }}
+      if: ${{ !fromJSON(inputs.skipBuild) && !fromJSON(inputs.cross) }}
       working-directory: ${{ inputs.path }}
       shell: bash
 
     - run: cross build ${{ inputs.buildOptions }}
-      if: ${{ !inputs.skipBuild && inputs.cross }}
+      if: ${{ !fromJSON(inputs.skipBuild) && fromJSON(inputs.cross) }}
       working-directory: ${{ inputs.path }}
       shell: bash
 
     - run: cargo test ${{ inputs.testOptions }}
-      if: ${{ !inputs.skipBuild && !inputs.skipUnitTests && !inputs.cross }}
+      if: ${{ !fromJSON(inputs.skipBuild) && !inputs.skipUnitTests && !fromJSON(inputs.cross) }}
       working-directory: ${{ inputs.path }}
       shell: bash
   
     - run: cross test ${{ inputs.testOptions }}
-      if: ${{ !inputs.skipBuild && !inputs.skipUnitTests && inputs.cross }}
+      if: ${{ !fromJSON(inputs.skipBuild) && !inputs.skipUnitTests && fromJSON(inputs.cross) }}
       working-directory: ${{ inputs.path }}
       shell: bash
