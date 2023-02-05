@@ -67,7 +67,7 @@ runs:
       if: ${{ !inputs.skipCache }}
       with:
         prefix-key: ${{ inputs.cacheKey }}
-        shared-key: ${{ runner.os }}
+        shared-key: ${{ runner.os }}-${{ inputs.target }}
         workspaces: ${{ inputs.path }} -> target
 
     - name: Install cargo-binstall
