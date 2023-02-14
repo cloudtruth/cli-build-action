@@ -102,5 +102,6 @@ jobs:
           override: true
           cacheKey: v0-cloudtruth-cli-custom-key
           cacheDirectories: ${{ env.HOME }}/.cargo/bin
+          editCargoVersion: 0.1.abcde
 
 
