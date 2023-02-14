@@ -26,6 +26,8 @@ inputs:
     default: 'false'
   target:
     description: Build targets to install with `rustup`. Note you will still need to pass in the `--target` build option with `buildOptions` if you want Cargo to build this target)
+  editCargoVersion:
+    description: Override the Cargo.toml version with a new version using cargo-edit
   skipUnitTests:
     description: Skips running unit tests
     default: 'false'
@@ -103,6 +105,18 @@ runs:
               curl -LSs "$BINSTALL_URL" > "/tmp/$BINSTALL_FILE"
               unzip -o -d "$HOME/.cargo/bin" "/tmp/$BINSTALL_FILE"
         esac;
+
+    - if: inputs.editCargoVersion != '' && fromJSON(inputs.cargoBinstall)
+      shell: bash
+      run: |
+        cargo binstall --no-confirm --force --strategies 'quick-install,crate-meta-data,compile' cargo-edit
+        cargo set-version '${{ inputs.editCargoVersion }}'
+
+    - if: inputs.editCargoVersion != '' && !fromJSON(inputs.cargoBinstall)
+      shell: bash
+      run: |
+        cargo install cargo-edit
+        cargo set-version '${{ inputs.editCargoVersion }}'
 
     - run: cargo binstall --no-confirm --force cross
       if: ${{ fromJSON(inputs.cargoBinstall) && fromJSON(inputs.cross) }}

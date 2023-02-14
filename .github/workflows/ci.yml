@@ -87,6 +87,7 @@ jobs:
           cross: true
           cargoBinstall: true
           target: x86_64-unknown-linux-musl
+          editCargoVersion: 0.1.abcde
       
       # Scenario: all non-skip options except target/cross/binstall
       - uses: ./
